@@ -2,10 +2,11 @@ import torch
 import torch.nn as nn
 
 '''
+h_t = tanh(W_{ih} x_t + b_{ih} + W_{hh} h_{(t-1)} + b_{hh})
 单向单层RNN
 参数维度：
     input_shape: [batch_size, sequence length, input_size]
-    ho_shape: [batch size, D*num_layers, hidden_size] --> 初始的memeory的值，D表示是不是双向，在本例中shape为[batch size, hidden_size]
+    ho_shape: [D*num_layers, batch size, hidden_size] --> 初始的memeory的值，D表示是不是双向，在本例中shape为[batch size, hidden_size]
     output_shape: [batch_size, sequence length, D*hidden_size] --> output包含了每一个单词的最后输出，D*hidden_size是因为当网络为双向时，output会concatten forward和backward的结果
     hn_shape: [D*num_layers, batch_size, hidden_size]
 函数实现参数维度：
