@@ -28,8 +28,25 @@ position_tabel = torch.zeros(max(max_src_seq_len,max_tgt_seq_len), model_dim) # 
 position_tabel[:, 0::2] = torch.sin(pos_mat / i_mat)
 position_tabel[:, 1::2] = torch.cos(pos_mat / i_mat)
 # 查看position_tabel
-print(position_tabel)
+# print(position_tabel)
 
 # 根据position_tabel和position index，利用nn.Embedding得到position embedding
+position_embedding = nn.Embedding(max(max_src_seq_len,max_tgt_seq_len), model_dim)
+position_embedding.weight = nn.Parameter(position_tabel, requires_grad = False)
+
+# method 2:另一种创建embedding的方法
+position_embedding2 = nn.Embedding.from_pretrained(position_tabel)
+print(position_embedding2.weight)
+
+# 为每个句子创建位置索引，一个batch中句子长度应该一样长，长度为最大的那个句子长度
+src_pos = torch.cat([torch.unsqueeze(torch.arange(max(src_len)), 0) for _ in src_len]).to(torch.int32) # [tensor([0, 1, 2, 3]), tensor([0, 1, 2, 3]), tensor([0, 1, 2, 3])] --> [tensor([[0, 1, 2, 3]]), tensor([[0, 1, 2, 3]]), tensor([[0, 1, 2, 3]])] --> [3, 4]
+tgt_pos = torch.cat([torch.unsqueeze(torch.arange(max(tgt_len)), 0) for _ in tgt_len]).to(torch.int32)
+# print(src_pos)
+
+src_position_embedding = position_embedding(src_pos)
+tgt_position_embedding = position_embedding(tgt_pos)
+print(position_embedding.weight)
+print(src_position_embedding)
+print(tgt_position_embedding)
 
 
